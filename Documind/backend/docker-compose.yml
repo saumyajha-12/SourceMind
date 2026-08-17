@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: documind-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - documind_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    image: dhirajcodes123/documind-backend:latest
+    container_name: documind-backend
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      PORT: ${PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      BATCH_SIZE: ${BATCH_SIZE}
+      RAPIDAPI_KEY: ${RAPIDAPI_KEY}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      TAVILY_API_KEY: ${TAVILY_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  documind_postgres_data:

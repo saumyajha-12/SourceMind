@@ -1,0 +1,30 @@
+# Node
+node_modules
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Prisma generated client
+src/generated/prisma
+
+# Uploaded PDFs
+uploads
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode
+
+# Build output
+dist
+build
+
+# Docker
+docker-data
