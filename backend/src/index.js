@@ -23,7 +23,8 @@ const allowedOrigins = [
   "https://1documind.netlify.app",
   "https://documindai.dev",
   "https://www.documindai.dev",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  process.env.FRONTEND_URL // Allow the frontend URL from environment variables
 ];
 
 app.use(cors({

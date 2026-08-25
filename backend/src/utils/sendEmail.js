@@ -6,7 +6,7 @@ exports.sendVerificationEmail = async (to, otp) => {
   console.log(`Sending verification email to ${to} with OTP: ${otp}`);
 
   const { data, error } = await resend.emails.send({
-    from: "DocuMind <no-reply@documindai.dev>",
+    from: "onboarding@resend.dev",
     to,
     subject: "Verify your DocuMind account",
     html: `
@@ -30,7 +30,7 @@ exports.sendVerificationEmail = async (to, otp) => {
 
 exports.sendResetPasswordEmail = async (to, otp) => {
   const { data, error } = await resend.emails.send({
-    from: "DocuMind <no-reply@documindai.dev>",
+    from: "onboarding@resend.dev",
     to,
     subject: "Reset your DocuMind password",
     html: `

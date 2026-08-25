@@ -13,13 +13,13 @@ services:
       - documind_postgres_data:/var/lib/postgresql/data
 
   backend:
-    image: dhirajcodes123/documind-backend:latest
+    build: .
     container_name: documind-backend
     restart: always
     depends_on:
       - postgres
     ports:
-      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:5001:5000"
     environment:
       PORT: ${PORT}
       DATABASE_URL: ${DATABASE_URL}
