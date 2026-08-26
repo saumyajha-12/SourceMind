@@ -24,6 +24,7 @@ const allowedOrigins = [
   "https://documindai.dev",
   "https://www.documindai.dev",
   "http://localhost:5173",
+  "https://source-mind-five.vercel.app",
   process.env.FRONTEND_URL // Allow the frontend URL from environment variables
 ];
 
