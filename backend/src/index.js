@@ -57,7 +57,7 @@ app.use("/api/news", newsRoutes);
 
 app.use(authMiddleware);
 
-app.get("/", (req, res) => res.json({ message: "DocuMind backend running 🚀" }));
+app.get("/", (req, res) => res.json({ message: "SourceMind backend running 🚀" }));
 app.use("/api/document", require("./routes/document.js"));
 app.use("/api/chat", require("./routes/chat.js"));
 app.use("/api/youtube", require("./routes/youtube.js"));

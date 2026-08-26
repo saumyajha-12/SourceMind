@@ -1,6 +1,6 @@
-# DocuMind
+# SourceMind
 
-DocuMind is an AI-powered platform that allows users to **chat with documents and online content** using Retrieval-Augmented Generation (RAG).
+SourceMind is an AI-powered platform that allows users to **chat with documents and online content** using Retrieval-Augmented Generation (RAG).
 
 Users can interact with **PDFs, websites, YouTube transcripts, and latest news articles**, enabling fast semantic search and contextual conversations over real-world content.
 
@@ -206,7 +206,7 @@ Nginx also redirects HTTP traffic to HTTPS.
 
 ## Project Summary
 
-DocuMind combines:
+SourceMind combines:
 - **RAG-based AI retrieval**
 - **vector similarity search**
 - **multi-source content analysis**

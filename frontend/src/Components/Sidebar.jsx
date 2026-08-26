@@ -76,7 +76,7 @@ export default function Sidebar({
         <div className="flex items-center gap-2">
           <DocumentTextIcon className="w-5 h-5 text-indigo-400" />
           <span className="font-semibold text-sm text-white tracking-wide">
-            DocuMind
+            SourceMind
           </span>
         </div>
         <button

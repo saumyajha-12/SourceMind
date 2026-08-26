@@ -8,7 +8,7 @@ exports.sendVerificationEmail = async (to, otp) => {
   const { data, error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to,
-    subject: "Verify your DocuMind account",
+    subject: "Verify your SourceMind account",
     html: `
       <h2>Email Verification</h2>
       <p>Your OTP is:</p>
@@ -32,7 +32,7 @@ exports.sendResetPasswordEmail = async (to, otp) => {
   const { data, error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to,
-    subject: "Reset your DocuMind password",
+    subject: "Reset your SourceMind password",
     html: `
       <h2>Reset Password</h2>
       <p>Your password reset OTP is:</p>

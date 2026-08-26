@@ -185,7 +185,7 @@ export default function UploadGate({
 
         <div className="flex items-center gap-2 text-zinc-600 text-sm mt-4">
           <ChatBubbleLeftRightIcon className="w-4 h-4" />
-          <span>Powered by DocuMind AI</span>
+          <span>Powered by SourceMind AI</span>
         </div>
       </div>
     );

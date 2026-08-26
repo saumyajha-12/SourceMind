@@ -12,7 +12,7 @@ import {
 import ArticleCard from "./Articlecard";
 import api from "../Api";
 
-const SESSION_KEY = "documind_news_searches";
+const SESSION_KEY = "sourcemind_news_searches";
 
 function saveSearches(s) {
   try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch { }
