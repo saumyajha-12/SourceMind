@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: sourcemind-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sourcemind-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: RAPIDAPI_KEY
+        sync: false
+      - key: BATCH_SIZE
+        value: "50"
+      - key: FRONTEND_URL
+        sync: false
+
+databases:
+  - name: sourcemind-postgres
+    plan: free
+    databaseName: documind
+    user: sourcemind_user
