@@ -35,7 +35,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const restore = async () => {
       try {
-        const { data } = await api.post("api/auth/refresh", {}, { withCredentials: true });
+        const { data } = await api.post(
+          "api/auth/refresh",
+          {},
+          { withCredentials: true, timeout: 7000 }
+        );
         setAccessToken(data.accessToken);
         setUser({ restored: true });
       } catch {

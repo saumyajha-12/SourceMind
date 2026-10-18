@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://api.mindchuk.co.in",
+  baseURL: import.meta.env.VITE_API_URL || "https://sourcemind-tgso.onrender.com",
+  timeout: 15000,
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });

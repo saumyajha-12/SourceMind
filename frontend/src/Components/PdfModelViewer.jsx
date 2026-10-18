@@ -9,7 +9,9 @@ export default function PdfViewerModal({ doc, onClose }) {
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  const pdfUrl = `https://api.mindchuk.co.in/api/document/${doc.id}/view`;
+  const apiUrl =
+    import.meta.env.VITE_API_URL || "https://sourcemind-tgso.onrender.com";
+  const pdfUrl = `${apiUrl}/api/document/${doc.id}/view`;
 
   return (
     <div
