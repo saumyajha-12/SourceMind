@@ -1,6 +1,6 @@
 const { PrismaClient } = require("../generated/prisma");
 const { generateEmbedding } = require("../utils/embedding");
-const { generateResponse } = require("../utils/gemini");
+const { generateResponse, generateResponseStream } = require("../utils/gemini");
 
 const prisma = new PrismaClient();
 
@@ -84,16 +84,8 @@ async function buildContext(chatId, message) {
   return { context, documentList, historyText };
 }
 
-async function sendMessage({ chatId, message, userId }) {
-  const chat = await prisma.chat.findFirst({ where: { id: chatId, userId } });
-  if (!chat) throw new Error("Chat not found");
-
-  const { context, documentList, historyText } = await buildContext(
-    chatId,
-    message
-  );
-
-  const prompt = `
+function buildPrompt(message, context, documentList, historyText) {
+  return `
 You are SourceMind 🧠 — a brilliant, warm, and witty AI assistant who lives inside documents and loves helping people understand them deeply.
 
 Your personality:
@@ -187,7 +179,18 @@ Ask yourself:
 4. Does my answer need sourcing? (claim from documents → cite it)
 5. Am I staying within the topic boundary? (yes = proceed, no = redirect)
 Assistant:`;
+}
 
+async function sendMessage({ chatId, message, userId }) {
+  const chat = await prisma.chat.findFirst({ where: { id: chatId, userId } });
+  if (!chat) throw new Error("Chat not found");
+
+  const { context, documentList, historyText } = await buildContext(
+    chatId,
+    message
+  );
+
+  const prompt = buildPrompt(message, context, documentList, historyText);
   const reply = await generateResponse(prompt);
 
   await prisma.$transaction([
@@ -202,4 +205,32 @@ Assistant:`;
   return reply;
 }
 
-module.exports = { getChatHistory, getChatMessages, sendMessage, buildContext };
+/**
+ * Stream a message response. Calls onChunk(text) for each token.
+ * Saves full messages to DB when done.
+ */
+async function sendMessageStream({ chatId, message, userId, onChunk }) {
+  const chat = await prisma.chat.findFirst({ where: { id: chatId, userId } });
+  if (!chat) throw new Error("Chat not found");
+
+  const { context, documentList, historyText } = await buildContext(
+    chatId,
+    message
+  );
+
+  const prompt = buildPrompt(message, context, documentList, historyText);
+  const fullReply = await generateResponseStream(prompt, onChunk);
+
+  await prisma.$transaction([
+    prisma.message.create({
+      data: { chatId, role: "user", content: message },
+    }),
+    prisma.message.create({
+      data: { chatId, role: "assistant", content: fullReply },
+    }),
+  ]);
+
+  return fullReply;
+}
+
+module.exports = { getChatHistory, getChatMessages, sendMessage, sendMessageStream, buildContext };

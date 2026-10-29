@@ -46,6 +46,58 @@ async function sendMessage(req, res) {
     return res.status(status).json({ error: err.message });
   }
 }
+
+/**
+ * SSE streaming endpoint — sends tokens as they arrive from Gemini
+ */
+async function sendMessageStream(req, res) {
+  const { chatId, message } = req.body;
+  if (!chatId || !message) {
+    return res.status(400).json({ error: "chatId and message are required" });
+  }
+
+  // Set up SSE headers
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no", // Disable nginx buffering (for Render/proxies)
+  });
+
+  // Handle client disconnect
+  let clientDisconnected = false;
+  req.on("close", () => {
+    clientDisconnected = true;
+  });
+
+  try {
+    await chatService.sendMessageStream({
+      chatId,
+      message,
+      userId: req.userId,
+      onChunk: (text) => {
+        if (!clientDisconnected) {
+          // Send each chunk as an SSE "data" event (JSON-encoded)
+          res.write(`data: ${JSON.stringify({ token: text })}\n\n`);
+          if (typeof res.flush === "function") res.flush();
+        }
+      },
+    });
+
+    // Signal completion
+    if (!clientDisconnected) {
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      res.end();
+    }
+  } catch (err) {
+    console.error("Stream message error:", err);
+    if (!clientDisconnected) {
+      res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+      res.end();
+    }
+  }
+}
+
 async function deleteChat(req, res) {
   try {
     const { chatId } = req.params;
@@ -93,4 +145,4 @@ async function deleteChat(req, res) {
   }
 }
 
-module.exports = { getHistory, getMessages, sendMessage, deleteChat };
+module.exports = { getHistory, getMessages, sendMessage, sendMessageStream, deleteChat };

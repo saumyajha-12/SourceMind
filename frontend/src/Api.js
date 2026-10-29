@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "https://sourcemind-tgso.onrender.com",
-  timeout: 15000,
+  timeout: 120000, // 2 minutes — Gemini responses + embedding + DB query can take time
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });

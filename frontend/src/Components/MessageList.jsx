@@ -36,55 +36,63 @@ export default function MessageList({ messages, isTyping, user }) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {messages.map((msg) => (
-        <div
-          key={msg.id}
-          className={`flex items-start gap-3 ${
-            msg.role === "user" ? "justify-end" : "justify-start"
-          }`}
-        >
-          {msg.role === "assistant" && (
-            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold shrink-0 mt-1">
-              D
-            </div>
-          )}
+      {messages.map((msg) => {
+        // Check if this is a streaming message (assistant message that's still being typed)
+        const isStreaming = isTyping && msg.role === "assistant" && msg.id === messages[messages.length - 1]?.id;
+
+        return (
           <div
-            className={`max-w-[75%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
-              msg.role === "user"
-                ? "bg-indigo-600 text-white rounded-br-sm"
-                : "bg-zinc-800 text-zinc-200 rounded-bl-sm border border-zinc-700"
+            key={msg.id}
+            className={`flex items-start gap-3 ${
+              msg.role === "user" ? "justify-end" : "justify-start"
             }`}
           >
-            {msg.role === "assistant" ? (
-              <ReactMarkdown components={mdComponents}>{msg.text}</ReactMarkdown>
-            ) : (
-              msg.text
+            {msg.role === "assistant" && (
+              <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold shrink-0 mt-1">
+                D
+              </div>
+            )}
+            <div
+              className={`max-w-[75%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
+                msg.role === "user"
+                  ? "bg-indigo-600 text-white rounded-br-sm"
+                  : "bg-zinc-800 text-zinc-200 rounded-bl-sm border border-zinc-700"
+              }`}
+            >
+              {msg.role === "assistant" ? (
+                <>
+                  {msg.text ? (
+                    <ReactMarkdown components={mdComponents}>{msg.text}</ReactMarkdown>
+                  ) : isStreaming ? (
+                    /* Show bouncing dots while waiting for first token */
+                    <div className="flex items-center gap-1.5">
+                      {[0, 1, 2].map((i) => (
+                        <span
+                          key={i}
+                          className="w-2 h-2 bg-zinc-500 rounded-full animate-bounce"
+                          style={{ animationDelay: `${i * 150}ms` }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                  {/* Blinking cursor while streaming */}
+                  {isStreaming && msg.text && (
+                    <span className="inline-block w-0.5 h-4 bg-indigo-400 animate-pulse ml-0.5 align-text-bottom" />
+                  )}
+                </>
+              ) : (
+                msg.text
+              )}
+            </div>
+            {msg.role === "user" && (
+              <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-semibold shrink-0 mt-1">
+                {user?.email?.[0]?.toUpperCase() ?? "U"}
+              </div>
             )}
           </div>
-          {msg.role === "user" && (
-            <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-semibold shrink-0 mt-1">
-              {user?.email?.[0]?.toUpperCase() ?? "U"}
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
 
-      {isTyping && (
-        <div className="flex items-start gap-3 justify-start">
-          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold shrink-0 mt-1">
-            D
-          </div>
-          <div className="bg-zinc-800 border border-zinc-700 rounded-2xl rounded-bl-sm px-5 py-4 flex items-center gap-1.5">
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="w-2 h-2 bg-zinc-500 rounded-full animate-bounce"
-                style={{ animationDelay: `${i * 150}ms` }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
       <div ref={messagesEndRef} />
     </div>
   );
